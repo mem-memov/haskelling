@@ -13,8 +13,10 @@ question words = B (Question words)
 
 add :: Fan Answer Question -> Fan Answer Question -> Fan Answer Question
 add answer@(A _) question@(B _) = Fan [answer] [question]
+add question@(B _) answer@(A _) = Fan [answer] [question]
 add (Fan [answer] questions) question@(Fan _ [one]) = Fan [answer] (question : questions)
 add (Fan answers [question]) answer@(Fan [one] _) = Fan (answer : answers) [question]
+add a q = Fan [a] [q]
 
 
 main = do
