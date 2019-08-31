@@ -1,1 +1,1 @@
-Fan [A (Answer "g")] [Fan [A (Answer "h")] [Fan [A (Answer "hh")] [Fan [A (Answer "h")] [Fan [A (Answer "h")] [Fan [A (Answer "h")] [Fan [A (Answer "h")] [Fan [A (Answer "h")] [Fan [B (Question "s")] [Fan [A (Answer "a")] [ClosedFan]]]]]]]]]]
+R (Question "what") [L (Answer "cat") [N],L (Answer "dog") [N],N]
