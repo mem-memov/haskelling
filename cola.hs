@@ -30,15 +30,33 @@ findQuestion words questions =
 
 add :: Message -> Message -> Message
 
-add (Reference question@(Question questionWords questionAnswers)) (Inquiry answer@(Answer answerWords [])) = 
+add (Reference (Question questionWords questionAnswers)) (Inquiry answer@(Answer answerWords [])) = 
   case (findAnswer answerWords questionAnswers) of
-    (Just (Answer foundAnswerWords foundAnswerQuestions), otherAnswers) -> Inquiry (Answer foundAnswerWords (question : foundAnswerQuestions))
-    (Nothing, allAnswers) -> Reference (Question questionWords (answer : questionAnswers))
+    (Just (Answer foundAnswerWords foundAnswerQuestions), otherAnswers) -> 
+      Inquiry (
+        Answer 
+          foundAnswerWords 
+          ((Question questionWords otherAnswers) : foundAnswerQuestions)
+      )
+    (Nothing,  allAnswers) -> 
+      Reference (
+        Question questionWords 
+        (answer : questionAnswers)
+      )
 
-add (Inquiry answer@(Answer answerWords answerQuestions)) (Reference question@(Question questionWords [])) =
+add (Inquiry (Answer answerWords answerQuestions)) (Reference question@(Question questionWords [])) =
   case (findQuestion questionWords answerQuestions) of
-    (Just (Question foundQuestionWords foundQuestionAnswers), otherQuestions) -> Reference (Question foundQuestionWords (answer : foundQuestionAnswers))
-    (Nothing, allQuestions) -> Inquiry (Answer answerWords (question : answerQuestions))
+    (Just (Question foundQuestionWords foundQuestionAnswers), otherQuestions) -> 
+      Reference (
+        Question 
+          foundQuestionWords 
+          ((Answer answerWords otherQuestions) : foundQuestionAnswers)
+      )
+    (Nothing, allQuestions) -> 
+      Inquiry (
+        Answer answerWords 
+        (question : answerQuestions)
+      )
 
 add Silence reference@(Reference _) = reference
 add Silence inquiry@(Inquiry _) = inquiry
