@@ -1,24 +1,48 @@
 import System.Directory
 
+newtype Words = Words { words :: String } deriving (Eq, Show, Read)
 
-data LR l r = N | L l [LR l r] | R r [LR l r] deriving (Show, Read)
-type Words = String
-data Question = Question Words deriving (Show, Read)
-data Answer = Answer Words deriving (Show, Read)
+data Question = Question Words [Answer] deriving (Show, Read)
+data Answer = Answer Words [Question] deriving (Show, Read)
+data Message = Silence | Reference Question | Inquiry Answer deriving (Show, Read)
 
-answer :: Words -> LR Answer Question
-answer words = L (Answer words) [N]
+findAnswer :: Words -> [Answer] -> (Maybe Answer, [Answer])
+findAnswer words answers = 
+  foldl 
+    (\result answer@(Answer answerWords answerQuestions) -> 
+      if words == answerWords 
+        then (Just answer, snd result) 
+        else (fst result, (answer : snd result))
+    ) 
+    (Nothing, []) 
+    answers
 
-question :: Words -> LR Answer Question
-question words = R (Question words) [N]
+findQuestion :: Words -> [Question] -> (Maybe Question, [Question])
+findQuestion words questions = 
+  foldl 
+    (\result question@(Question questionWords questionAnswers) -> 
+      if words == questionWords 
+        then (Just question, snd result) 
+        else (fst result, (question : snd result))
+    ) 
+    (Nothing, []) 
+    questions
 
-add :: LR Answer Question -> LR Answer Question -> LR Answer Question
-add (L answer questions) question@(R _ _) = L answer (question : questions)
-add (R question answers) answer@(L _ _) = R question (answer : answers) 
-add N question@(R _ _) = question
-add N answer@(L _ _) = answer
-add _ _ = N
--- add answer@(L _ _) (L answer questions) = 
+add :: Message -> Message -> Message
+
+add (Reference question@(Question questionWords questionAnswers)) (Inquiry answer@(Answer answerWords [])) = 
+  case (findAnswer answerWords questionAnswers) of
+    (Just (Answer foundAnswerWords foundAnswerQuestions), otherAnswers) -> Inquiry (Answer foundAnswerWords (question : foundAnswerQuestions))
+    (Nothing, allAnswers) -> Reference (Question questionWords (answer : questionAnswers))
+
+add (Inquiry answer@(Answer answerWords answerQuestions)) (Reference question@(Question questionWords [])) =
+  case (findQuestion questionWords answerQuestions) of
+    (Just (Question foundQuestionWords foundQuestionAnswers), otherQuestions) -> Reference (Question foundQuestionWords (answer : foundQuestionAnswers))
+    (Nothing, allQuestions) -> Inquiry (Answer answerWords (question : answerQuestions))
+
+add Silence reference@(Reference _) = reference
+add Silence inquiry@(Inquiry _) = inquiry
+add _ _ = Silence
 
 main = do
   createFile "db.txt"
@@ -31,14 +55,14 @@ main = do
   writeFile "db.txt" . show $ add remembered heard
   main
 
-comprehend :: Words -> LR Answer Question
-comprehend ('?' : words) = question words
-comprehend words = answer words
+comprehend :: String -> Message
+comprehend ('?' : words) = Reference (Question (Words words) [])
+comprehend words = Inquiry (Answer (Words words) [])
 
 
-recall :: String -> LR Answer Question
+recall :: String -> Message
 recall contents
-  | contents == "" = N
+  | contents == "" = Silence
   | otherwise = read contents
 
 createFile :: String -> IO ()

@@ -1,1 +1,1 @@
-R (Question "what") [L (Answer "cat") [N],L (Answer "dog") [N],N]
+Inquiry (Answer (Words {words = "ship"}) [Question (Words {words = "what"}) [Answer (Words {words = "ship"}) []]])
