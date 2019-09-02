@@ -2,14 +2,14 @@ import System.Directory
 
 newtype Words = Words { words :: String } deriving (Eq, Show, Read)
 
-data Question = Question Words [Answer] deriving (Show, Read)
-data Answer = Answer Words [Question] deriving (Show, Read)
+data Question = Question (Maybe Answer) Words [Answer] deriving (Show, Read)
+data Answer = Answer (Maybe Question) Words [Question] deriving (Show, Read)
 data Message = Silence | Reference Question | Inquiry Answer deriving (Show, Read)
 
 findAnswer :: Words -> [Answer] -> (Maybe Answer, [Answer])
 findAnswer words answers = 
   foldl 
-    (\result answer@(Answer answerWords answerQuestions) -> 
+    (\result answer@(Answer _ answerWords answerQuestions) -> 
       if words == answerWords 
         then (Just answer, snd result) 
         else (fst result, (answer : snd result))
@@ -20,7 +20,7 @@ findAnswer words answers =
 findQuestion :: Words -> [Question] -> (Maybe Question, [Question])
 findQuestion words questions = 
   foldl 
-    (\result question@(Question questionWords questionAnswers) -> 
+    (\result question@(Question _ questionWords questionAnswers) -> 
       if words == questionWords 
         then (Just question, snd result) 
         else (fst result, (question : snd result))
@@ -30,32 +30,38 @@ findQuestion words questions =
 
 add :: Message -> Message -> Message
 
-add (Reference (Question questionWords questionAnswers)) (Inquiry answer@(Answer answerWords [])) = 
+add (Reference question@(Question questionAnswer questionWords questionAnswers)) (Inquiry answer@(Answer Nothing answerWords [])) = 
   case (findAnswer answerWords questionAnswers) of
-    (Just (Answer foundAnswerWords foundAnswerQuestions), otherAnswers) -> 
+    (Just (Answer foundAnswerQuestion foundAnswerWords foundAnswerQuestions), otherAnswers) -> 
       Inquiry (
         Answer 
+          (Just question)
           foundAnswerWords 
-          ((Question questionWords otherAnswers) : foundAnswerQuestions)
+          foundAnswerQuestions
       )
     (Nothing,  allAnswers) -> 
       Reference (
-        Question questionWords 
-        (answer : questionAnswers)
+        Question 
+          questionAnswer
+          questionWords 
+          (answer : questionAnswers)
       )
 
-add (Inquiry (Answer answerWords answerQuestions)) (Reference question@(Question questionWords [])) =
+add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Reference question@(Question Nothing questionWords [])) =
   case (findQuestion questionWords answerQuestions) of
-    (Just (Question foundQuestionWords foundQuestionAnswers), otherQuestions) -> 
+    (Just (Question foundQuestionAnswer foundQuestionWords foundQuestionAnswers), otherQuestions) -> 
       Reference (
         Question 
+          (Just answer)
           foundQuestionWords 
-          ((Answer answerWords otherQuestions) : foundQuestionAnswers)
+          foundQuestionAnswers
       )
     (Nothing, allQuestions) -> 
       Inquiry (
-        Answer answerWords 
-        (question : answerQuestions)
+        Answer 
+          answerQuestion
+          answerWords 
+          (question : answerQuestions)
       )
 
 add Silence reference@(Reference _) = reference
@@ -74,8 +80,8 @@ main = do
   main
 
 comprehend :: String -> Message
-comprehend ('?' : words) = Reference (Question (Words words) [])
-comprehend words = Inquiry (Answer (Words words) [])
+comprehend ('?' : words) = Reference (Question Nothing (Words words) [])
+comprehend words = Inquiry (Answer Nothing (Words words) [])
 
 
 recall :: String -> Message
