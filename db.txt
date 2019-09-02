@@ -1,1 +1,1 @@
-Reference (Question (Just (Answer (Just (Question Nothing (Words {words = "what"}) [Answer Nothing (Words {words = "ship"}) []])) (Words {words = "ship"}) [Question Nothing (Words {words = "where"}) []])) (Words {words = "where"}) [Answer Nothing (Words {words = "storm"}) [],Answer Nothing (Words {words = "sea"}) []])
+Reference (Question Nothing (Words {getWords = "what"}) [])

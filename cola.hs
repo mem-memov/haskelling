@@ -1,6 +1,6 @@
 import System.Directory
 
-newtype Words = Words { words :: String } deriving (Eq, Show, Read)
+newtype Words = Words { getWords :: String } deriving (Eq, Show, Read)
 
 data Question = Question (Maybe Answer) Words [Answer] deriving (Show, Read)
 data Answer = Answer (Maybe Question) Words [Question] deriving (Show, Read)
@@ -72,12 +72,39 @@ main = do
   createFile "db.txt"
   contents <- readFile "db.txt"
   let remembered = recall contents
-  putStrLn (show remembered)
+  putStrLn (showFocus remembered)
   input <- getLine
   let heard = comprehend input
   putStrLn (show heard)
   writeFile "db.txt" . show $ add remembered heard
   main
+
+showQuestion :: Question -> String
+showQuestion (Question _ questionWords _) = (getWords questionWords) ++ "\n"
+
+showAnswer :: Answer -> String
+showAnswer (Answer _ answerWords _) = (getWords answerWords) ++ "\n"
+
+showQuestions :: [Question] -> String
+showQuestions [] = "\n"
+showQuestions (question : otherQuestions) = (showQuestion question) ++ "\n" ++ (showQuestions otherQuestions)
+
+showAnswers :: [Answer] -> String
+showAnswers [] = "\n"
+showAnswers (answer : otherAnswers) = (showAnswer answer) ++ "\n" ++ (showAnswers otherAnswers)
+
+showAnswerFocus :: Answer -> String
+showAnswerFocus answer@(Answer Nothing _ answerQuestions) = (showAnswer answer) ++ (showQuestions answerQuestions) ++ "\n"
+showAnswerFocus answer@(Answer (Just answerQuestion) _ answerQuestions) = (showQuestion answerQuestion) ++ "\n" ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions) ++ "\n"
+
+showQuestionFocus :: Question -> String
+showQuestionFocus question@(Question Nothing _ questionAnswers) = (showQuestion question) ++ (showAnswers questionAnswers) ++ "\n"
+showQuestionFocus question@(Question (Just questionAnswer) _ questionAnswers) = (showAnswer questionAnswer) ++ "\n" ++ (showQuestion question) ++ (showAnswers questionAnswers) ++ "\n"
+
+showFocus :: Message -> String
+showFocus Silence = "-"
+showFocus (Reference question) = showQuestionFocus question
+showFocus (Inquiry answer) = showAnswerFocus answer
 
 comprehend :: String -> Message
 comprehend ('?' : words) = Reference (Question Nothing (Words words) [])
