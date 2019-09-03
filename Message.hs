@@ -1,4 +1,13 @@
-import System.Directory
+module Message (
+  Words,
+  Question,
+  Answer,
+  Message,
+  add,
+  showFocus,
+  comprehend,
+  recall
+) where
 
 newtype Words = Words { getWords :: String } deriving (Eq, Show, Read)
 
@@ -64,62 +73,45 @@ add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Refere
           (question : answerQuestions)
       )
 
+add message Silence = message 
 add Silence reference@(Reference _) = reference
 add Silence inquiry@(Inquiry _) = inquiry
 add _ _ = Silence
 
-main = do
-  createFile "db.txt"
-  contents <- readFile "db.txt"
-  let remembered = recall contents
-  putStrLn (showFocus remembered)
-  input <- getLine
-  let heard = comprehend input
-  putStrLn (show heard)
-  writeFile "db.txt" . show $ add remembered heard
-  main
 
 showQuestion :: Question -> String
-showQuestion (Question _ questionWords _) = (getWords questionWords) ++ "\n"
+showQuestion (Question _ questionWords _) = "?" ++ (getWords questionWords)
 
 showAnswer :: Answer -> String
-showAnswer (Answer _ answerWords _) = (getWords answerWords) ++ "\n"
+showAnswer (Answer _ answerWords _) = (getWords answerWords)
 
 showQuestions :: [Question] -> String
-showQuestions [] = "\n"
+showQuestions [] = ""
 showQuestions (question : otherQuestions) = (showQuestion question) ++ "\n" ++ (showQuestions otherQuestions)
 
 showAnswers :: [Answer] -> String
-showAnswers [] = "\n"
+showAnswers [] = ""
 showAnswers (answer : otherAnswers) = (showAnswer answer) ++ "\n" ++ (showAnswers otherAnswers)
 
 showAnswerFocus :: Answer -> String
-showAnswerFocus answer@(Answer Nothing _ answerQuestions) = (showAnswer answer) ++ (showQuestions answerQuestions) ++ "\n"
-showAnswerFocus answer@(Answer (Just answerQuestion) _ answerQuestions) = (showQuestion answerQuestion) ++ "\n" ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions) ++ "\n"
+showAnswerFocus answer@(Answer Nothing _ answerQuestions) = (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions)
+showAnswerFocus answer@(Answer (Just answerQuestion) _ answerQuestions) = (showQuestion answerQuestion) ++ "\n" ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions)
 
 showQuestionFocus :: Question -> String
-showQuestionFocus question@(Question Nothing _ questionAnswers) = (showQuestion question) ++ (showAnswers questionAnswers) ++ "\n"
-showQuestionFocus question@(Question (Just questionAnswer) _ questionAnswers) = (showAnswer questionAnswer) ++ "\n" ++ (showQuestion question) ++ (showAnswers questionAnswers) ++ "\n"
+showQuestionFocus question@(Question Nothing _ questionAnswers) = (showQuestion question) ++ "\n" ++ (showAnswers questionAnswers)
+showQuestionFocus question@(Question (Just questionAnswer) _ questionAnswers) = (showAnswer questionAnswer) ++ "\n" ++ (showQuestion question) ++ "\n" ++ (showAnswers questionAnswers)
 
 showFocus :: Message -> String
-showFocus Silence = "-"
-showFocus (Reference question) = showQuestionFocus question
-showFocus (Inquiry answer) = showAnswerFocus answer
+showFocus Silence = "\n-"
+showFocus (Reference question) = "\n->" ++ showQuestionFocus question
+showFocus (Inquiry answer) = "\n->" ++ showAnswerFocus answer
 
 comprehend :: String -> Message
+comprehend "" = Silence
 comprehend ('?' : words) = Reference (Question Nothing (Words words) [])
 comprehend words = Inquiry (Answer Nothing (Words words) [])
-
 
 recall :: String -> Message
 recall contents
   | contents == "" = Silence
   | otherwise = read contents
-
-createFile :: String -> IO ()
-createFile file = do
-  fileExist <- doesFileExist file
-  if not fileExist
-    then writeFile file ""
-    else return ()
- 
