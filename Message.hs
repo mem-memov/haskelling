@@ -1,8 +1,4 @@
 module Message (
-  Words,
-  Question,
-  Answer,
-  Message,
   add,
   showFocus,
   comprehend,
