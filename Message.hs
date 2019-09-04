@@ -56,9 +56,10 @@ add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Refere
     (Nothing, allQuestions) -> 
       makeInquiry answerQuestion answerWords (question : answerQuestions)
 
+add reference@(Reference _) addedReference@(Reference _) = reference
+add inquiry@(Inquiry _) addedInquiry@(Inquiry _) = inquiry
 add message Silence = message 
-add Silence reference@(Reference _) = reference
-add Silence inquiry@(Inquiry _) = inquiry
+add Silence message = message
 add _ _ = Silence
 
 
