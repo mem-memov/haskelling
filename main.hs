@@ -1,4 +1,4 @@
-import System.Directory
+import File
 import Message
 
 main = do
@@ -11,11 +11,4 @@ main = do
   let understood = add remembered heard
   writeFile "db.txt" . show $ understood
   main
-
-createFile :: String -> IO ()
-createFile file = do
-  fileExist <- doesFileExist file
-  if not fileExist
-    then writeFile file ""
-    else return ()
  
