@@ -11,11 +11,17 @@ data Question = Question (Maybe Answer) Words [Answer] deriving (Show, Read)
 data Answer = Answer (Maybe Question) Words [Question] deriving (Show, Read)
 data Message = Silence | Reference Question | Inquiry Answer deriving (Show, Read)
 
+answerHasWords :: Answer -> Words -> Bool
+answerHasWords (Answer _ answerWords _) words = words == answerWords
+
+questionHasWords :: Question -> Words -> Bool
+questionHasWords (Question _ questionWords _) words = words == questionWords
+
 findAnswer :: Words -> [Answer] -> (Maybe Answer, [Answer])
 findAnswer words answers = 
   foldl 
-    (\result answer@(Answer _ answerWords answerQuestions) -> 
-      if words == answerWords 
+    (\result answer -> 
+      if answerHasWords answer words
         then (Just answer, snd result) 
         else (fst result, (answer : snd result))
     ) 
@@ -25,8 +31,8 @@ findAnswer words answers =
 findQuestion :: Words -> [Question] -> (Maybe Question, [Question])
 findQuestion words questions = 
   foldl 
-    (\result question@(Question _ questionWords questionAnswers) -> 
-      if words == questionWords 
+    (\result question -> 
+      if questionHasWords question words
         then (Just question, snd result) 
         else (fst result, (question : snd result))
     ) 
