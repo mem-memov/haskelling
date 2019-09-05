@@ -1,3 +1,5 @@
+module Main where
+
 import File
 import Message
 
@@ -11,4 +13,3 @@ main = do
   let understood = add remembered heard
   writeFile "db.txt" . show $ understood
   main
- 
