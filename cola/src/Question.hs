@@ -1,12 +1,10 @@
-module Question (
-  questionHasWords,
-  showQuestion
-) where
+module Question (hasWords, show) where
 
 import MessageTypes
+import Prelude hiding (show)
 
-questionHasWords :: Question -> Words -> Bool
-questionHasWords (Question _ questionWords _) words = words == questionWords
+hasWords :: Question -> Words -> Bool
+hasWords (Question _ questionWords _) words = words == questionWords
 
-showQuestion :: Question -> String
-showQuestion (Question _ questionWords _) = "?" ++ (getWords questionWords)
+show :: Question -> String
+show (Question _ questionWords _) = "?" ++ (getWords questionWords)

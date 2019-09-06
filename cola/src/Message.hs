@@ -7,7 +7,7 @@ module Message (
 
 import MessageTypes
 import qualified Answers (find)
-import Questions
+import qualified Questions (find)
 import Focus
 
 makeInquiry :: Maybe Question -> Words -> [Question] -> Message
@@ -27,7 +27,7 @@ add (Reference question@(Question questionAnswer questionWords questionAnswers))
 
 
 add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Reference question@(Question Nothing questionWords [])) =
-  case (findQuestion questionWords answerQuestions) of
+  case (Questions.find questionWords answerQuestions) of
     (Just (Question foundQuestionAnswer foundQuestionWords foundQuestionAnswers), otherQuestions) -> 
       makeReference (Just answer) foundQuestionWords foundQuestionAnswers
     (Nothing, allQuestions) -> 

@@ -3,11 +3,10 @@ module AnswerFocus(
 ) where
 
 import MessageTypes
-import Answer
-import Answers
-import Question
-import Questions
+import qualified Answer (show)
+import qualified Question (show)
+import qualified Questions (show)
 
 showAnswerFocus :: Answer -> String
-showAnswerFocus answer@(Answer Nothing _ answerQuestions) = " -> " ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions)
-showAnswerFocus answer@(Answer (Just answerQuestion) _ answerQuestions) = (showQuestion answerQuestion) ++ "\n -> " ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions)
+showAnswerFocus answer@(Answer Nothing _ answerQuestions) = " -> " ++ (Answer.show answer) ++ "\n" ++ (Questions.show answerQuestions)
+showAnswerFocus answer@(Answer (Just answerQuestion) _ answerQuestions) = (Question.show answerQuestion) ++ "\n -> " ++ (Answer.show answer) ++ "\n" ++ (Questions.show answerQuestions)

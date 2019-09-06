@@ -1,7 +1,6 @@
 module AnswersSpec (spec) where
 
 import MessageTypes
-import Answer
 import qualified Answers (find)
 
 import Test.Hspec

@@ -1,22 +1,20 @@
-module Answers (
-  find,
-  showAnswers
-) where
+module Answers (find, show) where
 
 import MessageTypes
-import Answer
+import qualified Answer (show, hasWords)
+import Prelude hiding (show)
 
 find :: Words -> [Answer] -> (Maybe Answer, [Answer])
 find words answers = 
   foldr 
     (\answer result -> 
-      if answerHasWords answer words
+      if Answer.hasWords answer words
         then (Just answer, snd result) 
         else (fst result, (answer : snd result))
     ) 
     (Nothing, []) 
     answers
 
-showAnswers :: [Answer] -> String
-showAnswers [] = ""
-showAnswers (answer : otherAnswers) = "  " ++ (showAnswer answer) ++ "\n" ++ (showAnswers otherAnswers)
+show :: [Answer] -> String
+show [] = ""
+show (answer : otherAnswers) = "  " ++ (Answer.show answer) ++ "\n" ++ (show otherAnswers)

@@ -1,16 +1,16 @@
 module AnswerSpec (spec) where
 
-import Answer
+import qualified Answer (hasWords)
 import MessageTypes
 
 import Test.Hspec
 
 spec :: Spec
 spec = do
-  describe "answerHasWords" $ do
+  describe "Answer.hasWords" $ do
 
     it "has positiove result" $
-      answerHasWords (Answer Nothing (Words "dog") []) (Words "dog") `shouldBe` True
+      Answer.hasWords (Answer Nothing (Words "dog") []) (Words "dog") `shouldBe` True
 
     it "has negative result" $
-      answerHasWords (Answer Nothing (Words "dog") []) (Words "cat") `shouldBe` False
+      Answer.hasWords (Answer Nothing (Words "dog") []) (Words "cat") `shouldBe` False

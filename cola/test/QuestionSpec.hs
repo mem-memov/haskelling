@@ -1,17 +1,22 @@
-
 module QuestionSpec (spec) where
 
-import Question
+import qualified Question (hasWords)
 import MessageTypes
 
 import Test.Hspec
 
 spec :: Spec
 spec = do
-  describe "questionHasWords" $ do
+  describe "Question.hasWords" $ do
 
     it "has positiove result" $
-      questionHasWords (Question Nothing (Words "what") []) (Words "what") `shouldBe` True
+      Question.hasWords 
+        (Question Nothing (Words "what") []) 
+        (Words "what") 
+      `shouldBe` True
 
     it "has negative result" $
-      questionHasWords (Question Nothing (Words "what") []) (Words "why") `shouldBe` False
+      Question.hasWords 
+        (Question Nothing (Words "what") []) 
+        (Words "why") 
+      `shouldBe` False

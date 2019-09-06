@@ -1,22 +1,20 @@
-module Questions (
-  findQuestion,
-  showQuestions
-) where
+module Questions (find, show) where
 
 import MessageTypes
-import Question
+import qualified Question (show, hasWords)
+import Prelude hiding (show)
 
-findQuestion :: Words -> [Question] -> (Maybe Question, [Question])
-findQuestion words questions = 
-  foldl 
-    (\result question -> 
-      if questionHasWords question words
+find :: Words -> [Question] -> (Maybe Question, [Question])
+find words questions = 
+  foldr 
+    (\question result -> 
+      if Question.hasWords question words
         then (Just question, snd result) 
         else (fst result, (question : snd result))
     ) 
     (Nothing, []) 
     questions
 
-showQuestions :: [Question] -> String
-showQuestions [] = ""
-showQuestions (question : otherQuestions) = "  " ++ (showQuestion question) ++ "\n" ++ (showQuestions otherQuestions)
+show :: [Question] -> String
+show [] = ""
+show (question : otherQuestions) = "  " ++ (Question.show question) ++ "\n" ++ (show otherQuestions)
