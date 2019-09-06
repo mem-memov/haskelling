@@ -1,4 +1,3 @@
-
 module AnswerSpec (spec) where
 
 import Answer

@@ -6,32 +6,9 @@ module Message (
 ) where
 
 import MessageTypes
-import Answer
-
-questionHasWords :: Question -> Words -> Bool
-questionHasWords (Question _ questionWords _) words = words == questionWords
-
-findAnswer :: Words -> [Answer] -> (Maybe Answer, [Answer])
-findAnswer words answers = 
-  foldl 
-    (\result answer -> 
-      if answerHasWords answer words
-        then (Just answer, snd result) 
-        else (fst result, (answer : snd result))
-    ) 
-    (Nothing, []) 
-    answers
-
-findQuestion :: Words -> [Question] -> (Maybe Question, [Question])
-findQuestion words questions = 
-  foldl 
-    (\result question -> 
-      if questionHasWords question words
-        then (Just question, snd result) 
-        else (fst result, (question : snd result))
-    ) 
-    (Nothing, []) 
-    questions
+import Answers
+import Questions
+import Focus
 
 makeInquiry :: Maybe Question -> Words -> [Question] -> Message
 makeInquiry answerQuestion answerWords answerQuestions = Inquiry (Answer answerQuestion answerWords answerQuestions)
@@ -63,32 +40,6 @@ add Silence message = message
 add _ _ = Silence
 
 
-showQuestion :: Question -> String
-showQuestion (Question _ questionWords _) = "?" ++ (getWords questionWords)
-
-showAnswer :: Answer -> String
-showAnswer (Answer _ answerWords _) = (getWords answerWords)
-
-showQuestions :: [Question] -> String
-showQuestions [] = ""
-showQuestions (question : otherQuestions) = "  " ++ (showQuestion question) ++ "\n" ++ (showQuestions otherQuestions)
-
-showAnswers :: [Answer] -> String
-showAnswers [] = ""
-showAnswers (answer : otherAnswers) = "  " ++ (showAnswer answer) ++ "\n" ++ (showAnswers otherAnswers)
-
-showAnswerFocus :: Answer -> String
-showAnswerFocus answer@(Answer Nothing _ answerQuestions) = " -> " ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions)
-showAnswerFocus answer@(Answer (Just answerQuestion) _ answerQuestions) = (showQuestion answerQuestion) ++ "\n -> " ++ (showAnswer answer) ++ "\n" ++ (showQuestions answerQuestions)
-
-showQuestionFocus :: Question -> String
-showQuestionFocus question@(Question Nothing _ questionAnswers) = " -> " ++ (showQuestion question) ++ "\n" ++ (showAnswers questionAnswers)
-showQuestionFocus question@(Question (Just questionAnswer) _ questionAnswers) = (showAnswer questionAnswer) ++ "\n -> " ++ (showQuestion question) ++ "\n" ++ (showAnswers questionAnswers)
-
-showFocus :: Message -> String
-showFocus Silence = "\n-"
-showFocus (Reference question) = "\n" ++ showQuestionFocus question
-showFocus (Inquiry answer) = "\n" ++ showAnswerFocus answer
 
 comprehend :: String -> Message
 comprehend "" = Silence
