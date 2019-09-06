@@ -1,26 +1,25 @@
 module Messages (add) where
 
 import MessageTypes
-import qualified Message (makeInquiry, makeReference)
 import qualified Answers (find)
 import qualified Questions (find)
+import qualified Inquiry (fromAnswer, fromQuestion)
+import qualified Reference (fromAnswer, fromQuestion)
+import qualified Pick (hasContent)
 
 add :: Message -> Message -> Message
 
-add (Reference question@(Question questionAnswer questionWords questionAnswers)) (Inquiry answer@(Answer Nothing answerWords [])) = 
-  case (Answers.find answerWords questionAnswers) of
-    (Just (Answer foundAnswerQuestion foundAnswerWords foundAnswerQuestions), otherAnswers) -> 
-      Message.makeInquiry (Just question) foundAnswerWords foundAnswerQuestions
-    (Nothing,  allAnswers) -> 
-      Message.makeReference questionAnswer questionWords (answer : questionAnswers)
-
+add (Reference question@(Question _ _ questionAnswers)) (Inquiry answer@(Answer Nothing answerWords [])) = 
+  let pick = Answers.find answerWords questionAnswers in
+    if Pick.hasContent pick 
+      then Inquiry.fromQuestion question pick
+      else Reference.fromQuestion question answer
 
 add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Reference question@(Question Nothing questionWords [])) =
-  case (Questions.find questionWords answerQuestions) of
-    (Just (Question foundQuestionAnswer foundQuestionWords foundQuestionAnswers), otherQuestions) -> 
-      Message.makeReference (Just answer) foundQuestionWords foundQuestionAnswers
-    (Nothing, allQuestions) -> 
-      Message.makeInquiry answerQuestion answerWords (question : answerQuestions)
+  let pick = Questions.find questionWords answerQuestions in
+    if Pick.hasContent pick 
+      then Reference.fromAnswer answer pick
+      else Inquiry.fromAnswer answer question
 
 add reference@(Reference _) addedReference@(Reference _) = reference
 add inquiry@(Inquiry _) addedInquiry@(Inquiry _) = inquiry

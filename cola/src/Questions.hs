@@ -2,17 +2,18 @@ module Questions (find, show) where
 
 import MessageTypes
 import qualified Question (show, hasWords)
+import qualified Pick (make, hold, append)
 import Prelude hiding (show)
 
-find :: Words -> [Question] -> (Maybe Question, [Question])
+find :: Words -> [Question] -> Pick Question
 find words questions = 
   foldr 
-    (\question result -> 
+    (\question pick -> 
       if Question.hasWords question words
-        then (Just question, snd result) 
-        else (fst result, (question : snd result))
+        then Pick.hold pick question
+        else Pick.append pick question
     ) 
-    (Nothing, []) 
+    Pick.make
     questions
 
 show :: [Question] -> String
