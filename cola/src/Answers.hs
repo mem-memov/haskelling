@@ -1,15 +1,15 @@
 module Answers (
-  findAnswer,
+  find,
   showAnswers
 ) where
 
 import MessageTypes
 import Answer
 
-findAnswer :: Words -> [Answer] -> (Maybe Answer, [Answer])
-findAnswer words answers = 
-  foldl 
-    (\result answer -> 
+find :: Words -> [Answer] -> (Maybe Answer, [Answer])
+find words answers = 
+  foldr 
+    (\answer result -> 
       if answerHasWords answer words
         then (Just answer, snd result) 
         else (fst result, (answer : snd result))
