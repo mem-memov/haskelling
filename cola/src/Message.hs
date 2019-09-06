@@ -6,9 +6,7 @@ module Message (
 ) where
 
 import MessageTypes
-
-answerHasWords :: Answer -> Words -> Bool
-answerHasWords (Answer _ answerWords _) words = words == answerWords
+import Answer
 
 questionHasWords :: Question -> Words -> Bool
 questionHasWords (Question _ questionWords _) words = words == questionWords
