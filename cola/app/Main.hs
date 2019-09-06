@@ -1,15 +1,17 @@
 module Main where
 
-import File
-import Message
+import qualified File (createFile)
+import qualified Message (recall, comprehend)
+import qualified Messages (add)
+import qualified Focus (show)
 
 main = do
-  createFile "db.txt"
+  File.createFile "db.txt"
   contents <- readFile "db.txt"
-  let remembered = recall contents
-  putStr (showFocus remembered)
+  let remembered = Message.recall contents
+  putStr (Focus.show remembered)
   input <- getLine
-  let heard = comprehend input
-  let understood = add remembered heard
+  let heard = Message.comprehend input
+  let understood = Messages.add remembered heard
   writeFile "db.txt" . show $ understood
   main

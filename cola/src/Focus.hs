@@ -1,12 +1,11 @@
-module Focus(
-  showFocus
-) where
+module Focus(show) where
 
 import MessageTypes
-import AnswerFocus
-import QuestionFocus
+import qualified AnswerFocus (show)
+import qualified QuestionFocus (show)
+import Prelude hiding (show)
 
-showFocus :: Message -> String
-showFocus Silence = "\n-"
-showFocus (Reference question) = "\n" ++ showQuestionFocus question
-showFocus (Inquiry answer) = "\n" ++ showAnswerFocus answer
+show :: Message -> String
+show Silence = "\n-"
+show (Reference question) = "\n" ++ QuestionFocus.show question
+show (Inquiry answer) = "\n" ++ AnswerFocus.show answer
