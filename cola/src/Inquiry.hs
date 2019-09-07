@@ -1,6 +1,9 @@
-module Inquiry (fromAnswer, fromQuestion, hasSameWords, fromReference) where
+module Inquiry (fromWords, fromAnswer, fromQuestion, hasSameWords, fromReference) where
 
 import MessageTypes
+
+fromWords :: Words -> Message
+fromWords words = Inquiry (Answer Nothing words [])
 
 fromAnswer :: Answer -> Question -> Message
 fromAnswer (Answer answerQuestion answerWords answerQuestions) question =

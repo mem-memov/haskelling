@@ -1,22 +1,16 @@
 module Message (
-  makeInquiry,
-  makeReference,
   comprehend,
   recall
 ) where
 
 import MessageTypes
-
-makeInquiry :: Maybe Question -> Words -> [Question] -> Message
-makeInquiry answerQuestion answerWords answerQuestions = Inquiry (Answer answerQuestion answerWords answerQuestions)
-
-makeReference :: Maybe Answer -> Words -> [Answer] -> Message
-makeReference questionAnswer questionWords questionAnswers = Reference (Question questionAnswer questionWords questionAnswers)
+import qualified Reference (fromWords)
+import qualified Inquiry (fromWords)
 
 comprehend :: String -> Message
 comprehend "" = Silence
-comprehend ('?' : words) = makeReference Nothing (Words words) []
-comprehend words = makeInquiry Nothing (Words words) []
+comprehend ('?' : words) = Reference.fromWords (Words words)
+comprehend words = Inquiry.fromWords (Words words)
 
 recall :: String -> Message
 recall contents
