@@ -10,4 +10,4 @@ find words answers = Pick.collect Pick.make answers (Answer.hasWords words)
 
 show :: [Answer] -> String
 show [] = ""
-show (answer : otherAnswers) = "  " ++ (Answer.show answer) ++ "\n" ++ (show otherAnswers)
+show (answer : otherAnswers) = " " ++ (Answer.show answer) ++ "\n" ++ (show otherAnswers)
