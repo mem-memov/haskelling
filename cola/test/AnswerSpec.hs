@@ -10,7 +10,7 @@ spec = do
   describe "Answer.hasWords" $ do
 
     it "has positiove result" $
-      Answer.hasWords (Answer Nothing (Words "dog") []) (Words "dog") `shouldBe` True
+      Answer.hasWords (Words "dog") (Answer Nothing (Words "dog") []) `shouldBe` True
 
     it "has negative result" $
-      Answer.hasWords (Answer Nothing (Words "dog") []) (Words "cat") `shouldBe` False
+      Answer.hasWords (Words "cat") (Answer Nothing (Words "dog") []) `shouldBe` False

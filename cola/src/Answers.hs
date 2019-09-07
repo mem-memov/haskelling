@@ -2,19 +2,11 @@ module Answers (find, show) where
 
 import MessageTypes
 import qualified Answer (show, hasWords)
-import qualified Pick (make, hold, append)
+import qualified Pick (make, hold, append, collect)
 import Prelude hiding (show)
 
 find :: Words -> [Answer] -> Pick Answer
-find words answers = 
-  foldr 
-    (\answer pick -> 
-      if Answer.hasWords answer words
-        then Pick.hold pick answer
-        else Pick.append pick answer
-    ) 
-    Pick.make
-    answers
+find words answers = Pick.collect Pick.make answers (Answer.hasWords words)
 
 show :: [Answer] -> String
 show [] = ""

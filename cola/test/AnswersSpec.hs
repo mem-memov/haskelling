@@ -40,8 +40,8 @@ spec = do
         Pick
           (Just (Answer Nothing (Words "dog") []))
           [
-            (Answer Nothing (Words "cat") []),
-            (Answer Nothing (Words "pig") [])
+            (Answer Nothing (Words "pig") []),
+            (Answer Nothing (Words "cat") [])
           ]
       )
   

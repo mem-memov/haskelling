@@ -3,8 +3,8 @@ module Answer (hasWords, show) where
 import MessageTypes
 import Prelude hiding (show)
 
-hasWords :: Answer -> Words -> Bool
-hasWords (Answer _ answerWords _) words = words == answerWords
+hasWords :: Words -> Answer -> Bool
+hasWords words (Answer _ answerWords _) = words == answerWords
 
 show :: Answer -> String
 show (Answer _ answerWords _) = (getWords answerWords)
