@@ -1,4 +1,4 @@
-module Inquiry (fromAnswer, fromQuestion) where
+module Inquiry (fromAnswer, fromQuestion, fromReference) where
 
 import MessageTypes
 
@@ -11,3 +11,7 @@ fromQuestion
   (Question questionAnswer questionWords questionAnswers)
   (Pick (Just (Answer _ answerWords answerQuestions)) answers) = 
     Inquiry (Answer (Just (Question questionAnswer questionWords answers)) answerWords answerQuestions)
+
+fromReference :: Message -> Message
+fromReference (Reference (Question (Just (Answer answerQuestion answerWords answerQuestions)) questionWords questionAnswers)) =
+  Inquiry (Answer (Just (Question Nothing questionWords questionAnswers)) answerWords answerQuestions)
