@@ -9,23 +9,29 @@ import qualified Pick (hasContent)
 
 add :: Message -> Message -> Message
 
-add (Reference question@(Question _ _ questionAnswers)) (Inquiry answer@(Answer Nothing answerWords [])) = 
-  let pick = Answers.find answerWords questionAnswers in
-    if Pick.hasContent pick 
-      then Inquiry.fromQuestion question pick
-      else Reference.fromQuestion question answer
+add 
+  (Reference question@(Question _ _ questionAnswers)) 
+  (Inquiry answer@(Answer Nothing answerWords []))
+  | Pick.hasContent pick = Inquiry.fromQuestion question pick
+  | otherwise = Reference.fromQuestion question answer
+  where pick = Answers.find answerWords questionAnswers
 
-add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Reference question@(Question Nothing questionWords [])) =
-  let pick = Questions.find questionWords answerQuestions in
-    if Pick.hasContent pick 
-      then Reference.fromAnswer answer pick
-      else Inquiry.fromAnswer answer question
+add 
+  (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) 
+  (Reference question@(Question Nothing questionWords [])) 
+  | Pick.hasContent pick = Reference.fromAnswer answer pick
+  | otherwise = Inquiry.fromAnswer answer question
+  where pick = Questions.find questionWords answerQuestions
 
-add reference@(Reference _) addedReference@(Reference _) 
+add 
+  reference@(Reference _) 
+  addedReference@(Reference _) 
   | Reference.hasSameWords reference addedReference = Inquiry.fromReference reference
   | otherwise = reference
 
-add inquiry@(Inquiry _) addedInquiry@(Inquiry _)
+add 
+  inquiry@(Inquiry _) 
+  addedInquiry@(Inquiry _)
   | Inquiry.hasSameWords inquiry addedInquiry = Reference.fromInquiry inquiry
   | otherwise = inquiry
 
