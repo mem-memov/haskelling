@@ -22,4 +22,7 @@ hasSameWords (Inquiry (Answer _ answerWords _)) (Inquiry (Answer _ otherAnswerWo
 fromReference :: Message -> Message
 fromReference (Reference (Question (Just (Answer answerQuestion answerWords answerQuestions)) questionWords questionAnswers)) =
   Inquiry (Answer answerQuestion answerWords ((Question Nothing questionWords questionAnswers) : answerQuestions))
+
+
+  
   

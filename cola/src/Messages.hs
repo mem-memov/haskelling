@@ -24,10 +24,18 @@ add
   where pick = Questions.find questionWords answerQuestions
 
 add 
+  reference@(Reference (Question Nothing _ _)) 
+  addedReference@(Reference _) = reference
+
+add 
   reference@(Reference _) 
   addedReference@(Reference _) 
   | Reference.hasSameWords reference addedReference = Inquiry.fromReference reference
   | otherwise = reference
+
+add 
+  inquiry@(Inquiry (Answer Nothing _ _)) 
+  addedInquiry@(Inquiry _) = inquiry
 
 add 
   inquiry@(Inquiry _) 
@@ -36,5 +44,7 @@ add
   | otherwise = inquiry
 
 add message Silence = message 
+
 add Silence message = message
+
 add _ _ = Silence
