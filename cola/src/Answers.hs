@@ -2,7 +2,7 @@ module Answers (find, show) where
 
 import MessageTypes
 import qualified Answer (show, hasWords)
-import qualified Pick (make, hold, append, collect)
+import qualified Pick (make, collect)
 import Prelude hiding (show)
 
 find :: Words -> [Answer] -> Pick Answer

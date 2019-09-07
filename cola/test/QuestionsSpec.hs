@@ -39,6 +39,6 @@ spec = do
       Pick
         (Just (Question Nothing (Words "why") []))
         [
-          (Question Nothing (Words "what") []),
-          (Question Nothing (Words "where") [])
+          (Question Nothing (Words "where") []),
+          (Question Nothing (Words "what") [])
         ]
