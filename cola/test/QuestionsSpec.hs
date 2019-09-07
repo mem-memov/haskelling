@@ -14,20 +14,18 @@ spec = do
         (Words "why") 
         [(Question Nothing (Words "why") [])] 
       `shouldBe` 
-      (
-        Just (Question Nothing (Words "why") []), 
+      Pick
+        (Just (Question Nothing (Words "why") [])) 
         []
-      )
 
     it "finds no question in an empty list" $
       Questions.find  
         (Words "why") 
         [] 
       `shouldBe` 
-      (
-        Nothing, 
+      Pick
+        Nothing
         []
-      )
 
     it "finds one question in a list of three questions" $
       Questions.find  
@@ -38,10 +36,9 @@ spec = do
           (Question Nothing (Words "where") [])
         ] 
       `shouldBe` 
-      (
-        Just (Question Nothing (Words "why") []),
+      Pick
+        (Just (Question Nothing (Words "why") []))
         [
           (Question Nothing (Words "what") []),
           (Question Nothing (Words "where") [])
         ]
-      )

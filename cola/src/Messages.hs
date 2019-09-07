@@ -3,8 +3,8 @@ module Messages (add) where
 import MessageTypes
 import qualified Answers (find)
 import qualified Questions (find)
-import qualified Inquiry (fromAnswer, fromQuestion, fromReference)
-import qualified Reference (fromAnswer, fromQuestion, hasSameWords)
+import qualified Inquiry (fromAnswer, fromQuestion, hasSameWords, fromReference)
+import qualified Reference (fromAnswer, fromQuestion, hasSameWords, fromInquiry)
 import qualified Pick (hasContent)
 
 add :: Message -> Message -> Message
@@ -24,7 +24,11 @@ add (Inquiry answer@(Answer answerQuestion answerWords answerQuestions)) (Refere
 add reference@(Reference _) addedReference@(Reference _) 
   | Reference.hasSameWords reference addedReference = Inquiry.fromReference reference
   | otherwise = reference
-add inquiry@(Inquiry _) addedInquiry@(Inquiry _) = inquiry
+
+add inquiry@(Inquiry _) addedInquiry@(Inquiry _)
+  | Inquiry.hasSameWords inquiry addedInquiry = Reference.fromInquiry inquiry
+  | otherwise = inquiry
+
 add message Silence = message 
 add Silence message = message
 add _ _ = Silence

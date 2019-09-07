@@ -1,1 +1,0 @@
-Inquiry (Answer (Just (Question Nothing (Words {getWords = "u"}) [Answer Nothing (Words {getWords = "u"}) [],Answer Nothing (Words {getWords = "d"}) []])) (Words {getWords = "d"}) [Question Nothing (Words {getWords = "t"}) []])

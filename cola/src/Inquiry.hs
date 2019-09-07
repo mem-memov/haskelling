@@ -1,4 +1,4 @@
-module Inquiry (fromAnswer, fromQuestion, fromReference) where
+module Inquiry (fromAnswer, fromQuestion, hasSameWords, fromReference) where
 
 import MessageTypes
 
@@ -12,6 +12,11 @@ fromQuestion
   (Pick (Just (Answer _ answerWords answerQuestions)) answers) = 
     Inquiry (Answer (Just (Question questionAnswer questionWords answers)) answerWords answerQuestions)
 
+hasSameWords :: Message -> Message -> Bool
+hasSameWords (Inquiry (Answer _ answerWords _)) (Inquiry (Answer _ otherAnswerWords _)) =
+  answerWords == otherAnswerWords
+
 fromReference :: Message -> Message
 fromReference (Reference (Question (Just (Answer answerQuestion answerWords answerQuestions)) questionWords questionAnswers)) =
-  Inquiry (Answer (Just (Question Nothing questionWords questionAnswers)) answerWords answerQuestions)
+  Inquiry (Answer answerQuestion answerWords ((Question Nothing questionWords questionAnswers) : answerQuestions))
+  
