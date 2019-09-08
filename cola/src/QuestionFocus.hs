@@ -1,6 +1,6 @@
 module QuestionFocus(show) where
 
-import MessageTypes
+import AnswerQuestionType
 import qualified Answer (show)
 import qualified Answers (show)
 import qualified Question (show)

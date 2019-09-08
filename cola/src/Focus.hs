@@ -1,6 +1,6 @@
 module Focus(show) where
 
-import MessageTypes
+import MessageType
 import qualified AnswerFocus (show)
 import qualified QuestionFocus (show)
 import Prelude hiding (show)

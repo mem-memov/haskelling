@@ -1,6 +1,6 @@
 module Pick (make, hasContent, collect) where
 
-import MessageTypes
+import PickType
 
 make :: Pick a
 make = Pick Nothing []

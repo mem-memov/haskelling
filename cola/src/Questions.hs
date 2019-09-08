@@ -1,6 +1,8 @@
 module Questions (find, show) where
 
-import MessageTypes
+import AnswerQuestionType
+import PickType
+import WordsType
 import qualified Question (show, hasWords)
 import qualified Pick (make, collect)
 import Prelude hiding (show)

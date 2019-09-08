@@ -3,7 +3,8 @@ module Message (
   recall
 ) where
 
-import MessageTypes
+import MessageType
+import WordsType
 import qualified Reference (fromWords)
 import qualified Inquiry (fromWords)
 

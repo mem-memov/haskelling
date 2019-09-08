@@ -1,7 +1,8 @@
 module QuestionSpec (spec) where
 
+import AnswerQuestionType
+import WordsType
 import qualified Question (hasWords)
-import MessageTypes
 
 import Test.Hspec
 

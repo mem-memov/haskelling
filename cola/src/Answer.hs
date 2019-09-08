@@ -1,6 +1,7 @@
 module Answer (hasWords, show) where
 
-import MessageTypes
+import AnswerQuestionType
+import WordsType
 import Prelude hiding (show)
 
 hasWords :: Words -> Answer -> Bool

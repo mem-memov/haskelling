@@ -1,6 +1,7 @@
 module Messages (add) where
 
-import MessageTypes
+import AnswerQuestionType
+import MessageType
 import qualified Answers (find)
 import qualified Questions (find)
 import qualified Inquiry (fromAnswer, fromQuestion, hasSameWords, fromReference)

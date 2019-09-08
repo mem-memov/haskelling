@@ -1,6 +1,9 @@
 module Inquiry (fromWords, fromAnswer, fromQuestion, hasSameWords, fromReference) where
 
-import MessageTypes
+import AnswerQuestionType
+import MessageType
+import WordsType
+import PickType
 
 fromWords :: Words -> Message
 fromWords words = Inquiry (Answer Nothing words [])

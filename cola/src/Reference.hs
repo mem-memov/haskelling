@@ -1,6 +1,9 @@
 module Reference (fromWords, fromAnswer, fromQuestion, hasSameWords, fromInquiry) where
 
-import MessageTypes
+import AnswerQuestionType
+import MessageType
+import WordsType
+import PickType
 
 fromWords :: Words -> Message
 fromWords words = Reference (Question Nothing words [])
